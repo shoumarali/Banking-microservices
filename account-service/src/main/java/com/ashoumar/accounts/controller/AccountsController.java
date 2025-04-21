@@ -2,12 +2,20 @@ package com.ashoumar.accounts.controller;
 
 import com.ashoumar.accounts.constants.AccountsConstant;
 import com.ashoumar.accounts.dto.CustomerDto;
+import com.ashoumar.accounts.dto.ErrorResponseDto;
 import com.ashoumar.accounts.dto.ResponseDto;
 import com.ashoumar.accounts.entity.Customer;
 import com.ashoumar.accounts.service.IAccountsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +23,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 //@RestController it’s a shortcut for @Controller + @ResponseBody.
+@Tag(
+        name = "Crust Rest Api for account service"
+
+)
 @RestController
 @RequestMapping(path = "/api",produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
@@ -23,6 +35,23 @@ public class AccountsController {
 
     private IAccountsService iAccountsService;
 
+    @Operation(
+            summary = "Create Account Rest api",
+            description = "Api to create new customer and account"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Http status code OK"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Http status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    })
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> createAccount(@Valid @RequestBody CustomerDto customerDto){
         iAccountsService.createAccount(customerDto);
@@ -33,6 +62,23 @@ public class AccountsController {
                         AccountsConstant.MESSAGE_201));
     }
 
+    @Operation(
+            summary = "Fetch Accounts Details Rest Api",
+            description = "Rest api to fetch customer and accounts details based on mobile number"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Http status code OK"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Http status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    })
     @GetMapping("/fetch")
     public ResponseEntity<CustomerDto> getAccount(
             @RequestParam("mobileNumber")
@@ -45,6 +91,27 @@ public class AccountsController {
                 .body(customerDto);
     }
 
+    @Operation(
+            summary = "Update accounts details rest api",
+            description = "Rest api to update customer and account details based on account number"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Http status code OK"
+            ),
+            @ApiResponse(
+                    responseCode = "417",
+                    description = "Expectation Failed"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Http status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    })
     @PutMapping("/update")
     public ResponseEntity<ResponseDto> updateAccountDetails(@Valid @RequestBody CustomerDto customerDto){
         boolean isUpdated = iAccountsService.updateAccount(customerDto);
@@ -58,11 +125,32 @@ public class AccountsController {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDto(
-                            AccountsConstant.STATUS_500,
-                            AccountsConstant.MESSAGE_500));
+                            AccountsConstant.STATUS_417,
+                            AccountsConstant.MESSAGE_417_UPDATE));
         }
     }
 
+    @Operation(
+            summary = "Delete accounts and customer details operation",
+            description = "Rest Api to delete account and customer details based on mobile number"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Http status OK"
+            ),
+            @ApiResponse(
+                    responseCode = "417",
+                    description = "Expectation Failed"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Http status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    })
     @DeleteMapping("/delete")
     public ResponseEntity<ResponseDto> deleteAccount(
             @RequestParam("mobileNumber")
@@ -78,8 +166,8 @@ public class AccountsController {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDto(
-                            AccountsConstant.STATUS_500,
-                            AccountsConstant.MESSAGE_500));
+                            AccountsConstant.STATUS_417,
+                            AccountsConstant.MESSAGE_417_DELETE));
         }
     }
 }

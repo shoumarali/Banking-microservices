@@ -38,8 +38,6 @@ public class AccountsServiceImpl implements IAccountsService {
                     "Customer Already registered with the given mobile number "+ customer.getMobileNumber()
             );
         }
-        customer.setCreatedAt(LocalDateTime.now());
-        customer.setCreatedBy("Ali");
         Customer savedCustomer = customerRepository.save(customer);
         accountsRepository.save(createNewAccount(savedCustomer));
 
@@ -54,10 +52,6 @@ public class AccountsServiceImpl implements IAccountsService {
                 AccountsConstant.SAVINGS,
                 AccountsConstant.ADDRESS
         );
-
-        account.setCreatedAt(LocalDateTime.now());
-        account.setCreatedBy("Ali");
-
         return account;
     }
 
