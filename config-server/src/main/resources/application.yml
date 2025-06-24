@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: "config-server"
+  profiles:
+    active: git
+  cloud:
+    config:
+      server:
+        git:
+          uri: "https://github.com/shoumarali/configs.git"
+          username: "${GIT_USERNAME}"
+          password: "${GIT_TOKEN}"
+          default-label: master
+          timeout: 5
+          clone-on-start: true
+          force-pull: true
+
+  rabbitmq:
+    host: "${RABBITMQ_HOST:localhost}"
+    port: 5672
+    username: "${RABBITMQ_USERNAME:guest}"
+    password: "${RABBITMQ_PASSWORD:guest}"
+
+#encrypt:
+#    key: ""
+
+server:
+  port: 8071
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true

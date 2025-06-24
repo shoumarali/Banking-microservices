@@ -1,0 +1,81 @@
+services:
+
+  rabbitmq:
+    image: "rabbitmq"
+    container_name: rabbitmq
+    hostname: "rabbitmq"
+    ports:
+      - "5672:5672"
+    healthcheck:
+      test: "rabbitmq-diagnostics check_port_connectivity"
+      interval: 10s
+      timeout: 5s
+      retries: 19
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+  config-server:
+    image: "alishoumar/config-server:1.0.0"
+    container_name: "config-server"
+    ports:
+      - "8071:8071"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:8071/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+
+  account-service:
+    image: "alishoumar/account-service:1.0.0"
+    container_name: "account-service"
+    ports:
+      - "8080:8080"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "account-service"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+  loan-service:
+    image: "alishoumar/loan-service:1.0.0"
+    container_name: "loan-service"
+    ports:
+      - "8090:8090"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "loan-service"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+  card-service:
+    image: "alishoumar/card-service:1.0.0"
+    container_name: "card-service"
+    ports:
+      - "9000:9000"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "card-service"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+networks:
+  banking:
+    driver: "bridge"
