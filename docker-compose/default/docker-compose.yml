@@ -55,7 +55,7 @@ services:
       rabbitmq:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget --spider -q http://localhost:8071/actuator/health || exit 1"]
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:8071/actuator/health/readiness | grep -q '\"status\":\"UP\"' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -68,6 +68,27 @@ services:
       file: common-config.yml
       service: microservice-base-config
 
+  eureka-server:
+    image: "alishoumar/eureka-server:1.0.0"
+    hostname: "eureka-server"
+    container_name: "eureka-server"
+    ports:
+      - "8070:8070"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:8070/actuator/health/readiness | grep -q '\"status\":\"UP\"' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      SPRING_APPLICATION_NAME: "eureka-server"
+    extends:
+      file: common-config.yml
+      service: microservices-eureka-config
+
   account-service:
     image: "alishoumar/account-service:1.0.0"
     container_name: "account-service"
@@ -77,6 +98,8 @@ services:
       account-db:
         condition: service_healthy
       config-server:
+        condition: service_healthy
+      eureka-server:
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "account-service"
@@ -95,6 +118,8 @@ services:
         condition: service_healthy
       config-server:
         condition: service_healthy
+      eureka-server:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "loan-service"
       SPRING_DATASOURCE_URL: "jdbc:mysql://loan-db:3306/loansdb"
@@ -111,6 +136,8 @@ services:
       card-db:
         condition: service_healthy
       config-server:
+        condition: service_healthy
+      eureka-server:
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "card-service"

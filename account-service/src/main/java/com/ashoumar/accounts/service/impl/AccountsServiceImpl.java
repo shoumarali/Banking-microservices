@@ -14,8 +14,6 @@ import com.ashoumar.accounts.repository.CustomerRepository;
 import com.ashoumar.accounts.service.IAccountsService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 

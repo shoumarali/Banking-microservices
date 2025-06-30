@@ -12,8 +12,8 @@ services:
       test: [ "CMD","mysqladmin","ping","-h","localhost" ]
       interval: 10s
       timeout: 10s
-      retries: 10
-      start_period: 20s
+      retries: 20
+      start_period: 10s
     environment:
       MYSQL_ROOT_PASSWORD: "root"
 
@@ -27,6 +27,9 @@ services:
           memory: 700m
     environment:
       SPRING_RABBITMQ_HOST: "rabbitmq"
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: "guest"
+      SPRING_RABBITMQ_PASSWORD: "guest"
 
   microservice-configserver-config:
     extends:
@@ -36,3 +39,10 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://config-server:8071/
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+
+  microservices-eureka-config:
+    extends:
+      service: network-deploy-service
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8071/

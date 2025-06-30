@@ -10,6 +10,7 @@
         <module name="config-server" />
         <module name="card-service" />
         <module name="account-service" />
+        <module name="eureka-server" />
         <module name="loan-service" />
       </profile>
     </annotationProcessing>
