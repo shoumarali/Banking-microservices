@@ -13,9 +13,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
@@ -39,6 +39,8 @@ public class CardController {
     private final ICardsService iCardsService;
 
     private  final Environment environment;
+
+    private final static Logger logger = LoggerFactory.getLogger(CardController.class);
 
     @Value("${build.version}")
     private String buildVersion;
@@ -91,9 +93,14 @@ public class CardController {
     })
     @GetMapping("/fetch")
     public ResponseEntity<CardsDto> fetchCardDetails(
+            @RequestHeader("banking-correlation-id")
+            String correlationId,
             @RequestParam("mobileNumber")
             @Pattern(regexp = "^[0-9]{8}$", message = "Mobile number must be exactly 8 digits")
             String mobileNumber) {
+
+        logger.debug("banking correlation id found : {}",correlationId);
+
         CardsDto cardsDto = iCardsService.fetchCard(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(cardsDto);
     }

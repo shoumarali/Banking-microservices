@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SERVICES=("account-service" "card-service" "config-server" "loan-service" "eureka-server")
+SERVICES=("gateway-server" "account-service" "card-service" "config-server" "loan-service" "eureka-server")
 
 if docker ps > /dev/null 2>&1; then
     DOCKER_CMD="docker"

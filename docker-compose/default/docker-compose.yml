@@ -89,6 +89,7 @@ services:
       file: common-config.yml
       service: microservices-eureka-config
 
+
   account-service:
     image: "alishoumar/account-service:1.0.0"
     container_name: "account-service"
@@ -97,10 +98,14 @@ services:
     depends_on:
       account-db:
         condition: service_healthy
-      config-server:
-        condition: service_healthy
       eureka-server:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q -O - http://localhost:8080/actuator/health/readiness | grep -q '\"status\":\"UP\"' || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: "account-service"
       SPRING_DATASOURCE_URL: "jdbc:mysql://account-db:3306/accountsdb"
@@ -116,10 +121,14 @@ services:
     depends_on:
       loan-db:
         condition: service_healthy
-      config-server:
-        condition: service_healthy
       eureka-server:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q -O - http://localhost:8090/actuator/health/readiness | grep -q '\"status\":\"UP\"' || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: "loan-service"
       SPRING_DATASOURCE_URL: "jdbc:mysql://loan-db:3306/loansdb"
@@ -135,16 +144,38 @@ services:
     depends_on:
       card-db:
         condition: service_healthy
-      config-server:
-        condition: service_healthy
       eureka-server:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q -O - http://localhost:9000/actuator/health/readiness | grep -q '\"status\":\"UP\"' || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: "card-service"
       SPRING_DATASOURCE_URL: "jdbc:mysql://card-db:3306/cardsdb"
     extends:
       file: common-config.yml
       service: microservice-configserver-config
+
+  gateway-server:
+    image: "alishoumar/gateway-server:1.0.0"
+    container_name: "gateway-server"
+    ports:
+      - "8072:8072"
+    depends_on:
+      account-service:
+        condition: service_healthy
+      card-service:
+        condition: service_healthy
+      loan-service:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "gateway-server"
+    extends:
+      file: common-config.yml
+      service: microservices-eureka-config
 
 networks:
   banking:
