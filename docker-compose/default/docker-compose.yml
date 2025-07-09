@@ -16,6 +16,21 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
+  redis:
+    image: "redis"
+    container_name: "redis"
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 19
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   account-db:
     container_name: "account-db"
     ports:
@@ -60,9 +75,6 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
-    environment:
-      SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME: ${GIT_USERNAME}
-      SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD: ${GIT_TOKEN}
 
     extends:
       file: common-config.yml
@@ -171,8 +183,12 @@ services:
         condition: service_healthy
       loan-service:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "gateway-server"
+      SPRING_DATA_REDIS_HOST: "redis"
+      SPRING_REDIS_PORT: 6379
     extends:
       file: common-config.yml
       service: microservices-eureka-config
