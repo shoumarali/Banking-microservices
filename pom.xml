@@ -23,6 +23,7 @@
         <java.version>17</java.version>
         <spring-boot.version>3.5.3</spring-boot.version>
         <spring-cloud.version>2025.0.0</spring-cloud.version>
+        <otelVersion>2.11.0</otelVersion>
     </properties>
 
     <dependencyManagement>

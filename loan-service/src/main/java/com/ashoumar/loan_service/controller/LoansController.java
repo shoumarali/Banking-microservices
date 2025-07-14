@@ -99,8 +99,10 @@ public class LoansController {
             @Pattern(regexp = "^[0-9]{8}$", message = "Mobile number must be exactly 8 digits")
             String mobileNumber
     ) {
-        logger.debug("banking correlation id found: {}",correlationId);
+//        logger.debug("banking correlation id found: {}",correlationId);
+        logger.debug("fetching loan details started ");
         LoansDto loansDto = iLoansService.fetchLoan(mobileNumber);
+        logger.debug("fetching loan details ended");
         return ResponseEntity.status(HttpStatus.OK).body(loansDto);
     }
 

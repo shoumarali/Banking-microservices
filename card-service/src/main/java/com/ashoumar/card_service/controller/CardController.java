@@ -99,9 +99,13 @@ public class CardController {
             @Pattern(regexp = "^[0-9]{8}$", message = "Mobile number must be exactly 8 digits")
             String mobileNumber) {
 
-        logger.debug("banking correlation id found : {}",correlationId);
+//        logger.debug("banking correlation id found : {}",correlationId);
+
+        logger.debug("fetch card details started");
 
         CardsDto cardsDto = iCardsService.fetchCard(mobileNumber);
+        logger.debug("fetch card details ended");
+
         return ResponseEntity.status(HttpStatus.OK).body(cardsDto);
     }
 

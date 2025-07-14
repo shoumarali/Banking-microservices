@@ -36,10 +36,11 @@ public class CustomerController {
             String mobileNumber
     ){
 
-        logger.debug("banking correlation id found: {}", correlationId);
+//        logger.debug("banking correlation id found: {}", correlationId);
 
+        logger.debug("fetch customer details started");
         CustomerDetailsDto customerDetailsDto = customerService.fetchCustomerDetails(mobileNumber, correlationId);
-
+        logger.debug("fetch customer details ended");
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(customerDetailsDto);
