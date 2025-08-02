@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SERVICES=("gateway-server" "account-service" "card-service" "config-server" "loan-service" "eureka-server" "message-service")
+SERVICES=("account-service" "message-service")
 
 if docker ps > /dev/null 2>&1; then
     DOCKER_CMD="docker"
@@ -13,8 +13,8 @@ fi
 
 for service in "${SERVICES[@]}"; do
     echo "Removing container and image for: $service"
-    $DOCKER_CMD stop "$service" 2>/dev/null  
-    $DOCKER_CMD rm "$service" 2>/dev/null   
+    $DOCKER_CMD stop "$service" 2>/dev/null
+    $DOCKER_CMD rm "$service" 2>/dev/null
     $DOCKER_CMD rmi "alishoumar/$service:1.0.0" 2>/dev/null || echo "Failed to remove image for $service"
 done
 

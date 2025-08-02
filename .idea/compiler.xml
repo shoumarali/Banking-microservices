@@ -8,11 +8,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="config-server" />
+        <module name="loan-service" />
         <module name="gateway-server" />
         <module name="card-service" />
         <module name="account-service" />
         <module name="eureka-server" />
-        <module name="loan-service" />
+        <module name="message-service" />
       </profile>
     </annotationProcessing>
   </component>

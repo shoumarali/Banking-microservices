@@ -1,11 +1,12 @@
 services:
 
   rabbitmq:
-    image: "rabbitmq"
+    image: "rabbitmq:management"
     container_name: rabbitmq
     hostname: "rabbitmq"
     ports:
       - "5672:5672"
+      - "15672:15672"
     healthcheck:
       test: "rabbitmq-diagnostics check_port_connectivity"
       interval: 10s
@@ -182,6 +183,23 @@ services:
     extends:
       file: common-config.yml
       service: microservice-configserver-config
+
+  message-service:
+    image: "alishoumar/message-service:1.0.0"
+    container_name: "message-service"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      account-service:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "message-service"
+      SPRING_RABBITMQ_HOST: "rabbitmq"
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: "guest"
+      SPRING_RABBITMQ_PASSWORD: "guest"
+    networks:
+     - banking
 
   gateway-server:
     image: "alishoumar/gateway-server:1.0.0"

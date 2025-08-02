@@ -4,3 +4,8 @@ server:
 spring:
   application:
     name: "account-service"
+  cloud:
+    stream:
+      bindings:
+        sendCommunication-out-0:
+          destination: send-communication

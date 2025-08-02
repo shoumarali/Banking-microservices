@@ -1,0 +1,22 @@
+server:
+  port: 9010
+
+spring:
+  application:
+    name: "message-service"
+  cloud:
+    function:
+      definition: email|sms
+    stream:
+      bindings:
+        emailsms-in-0:
+          destination: send-communication
+          group: ${spring.application.name}
+
+twilio:
+  account:
+    sid: "twilio_sid_account"
+  auth:
+    token: "twilio_auth_token"
+  phone:
+    from: "number_sending_message"
