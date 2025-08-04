@@ -48,10 +48,8 @@ This project modernizes banking systems by addressing:
 - **Framework**: Spring Boot 3.5.3 + Spring Cloud
 - **Database**: MySQL
 - **Auth**: Keycloak (OAuth2/JWT)
-- **API Docs**: Swagger/OpenAPI
 - **Containerization**: Docker, Jib
 - **Orchestration**: Docker Compose
-- **CI/CD**: GitHub Actions
 - **Messaging**: RabbitMQ
 - **Monitoring**: Prometheus, Grafana, Loki, Tempo
 
