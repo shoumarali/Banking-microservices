@@ -63,7 +63,9 @@ This project modernizes banking systems by addressing:
 - Bash shell
 
 ### Quick Start
-1. **Build containers**:
+ **Build containers**:
   Navigate to the project's root directory and run "./RecreateImages.sh" to build the Docker images.
+
   Then change to the default Docker Compose directory and start the containers in detached mode my running "docker compose up -d"
+  
 ℹ️I’m currently setting up Kubernetes deployment using Minikube. The images aren’t yet available on Docker Hub but will be published soon. For now, please build the containers locally using the provided script.
